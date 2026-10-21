@@ -1,0 +1,469 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NovaCart | Online Shopping</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f7f8fc;
+            color: #20243a;
+        }
+
+        header {
+            background: white;
+            padding: 20px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            box-shadow: 0 2px 12px #0000000d;
+        }
+
+        .logo {
+            font-size: 27px;
+            font-weight: bold;
+            color: #6654e8;
+        }
+
+        .search {
+            padding: 12px;
+            width: 280px;
+            max-width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .cart {
+            font-weight: bold;
+            color: #6654e8;
+        }
+
+        button {
+            padding: 10px 15px;
+            background: #6654e8;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #5040c5;
+        }
+
+        #loginSection {
+            text-align: center;
+            padding: 20px;
+        }
+
+        #authForm {
+            display: none;
+            max-width: 380px;
+            margin: 20px auto;
+            padding: 25px;
+            border-radius: 12px;
+            background: #fff;
+            box-shadow: 0 4px 12px #0000001f;
+            text-align: center;
+        }
+
+        #authForm h2 {
+            margin-bottom: 15px;
+        }
+
+        #authForm input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+        }
+
+        #authForm button {
+            margin: 6px 3px;
+        }
+
+        #authMessage {
+            margin-top: 12px;
+            overflow-wrap: anywhere;
+        }
+
+        .hero {
+            margin: 30px auto;
+            width: 88%;
+            padding: 55px 35px;
+            border-radius: 18px;
+            background: linear-gradient(120deg, #e9e5ff, #fce7f3);
+        }
+
+        .hero h1 {
+            font-size: clamp(30px, 5vw, 48px);
+            margin-bottom: 15px;
+        }
+
+        .hero p {
+            font-size: 17px;
+            color: #555;
+            margin-bottom: 22px;
+        }
+
+        .section-title {
+            margin: 35px 7% 20px;
+        }
+
+        .products {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 22px;
+            margin: 0 7% 45px;
+        }
+
+        .product {
+            background: white;
+            padding: 18px;
+            border-radius: 14px;
+            box-shadow: 0 3px 15px #0000000a;
+        }
+
+        .product-image {
+            height: 150px;
+            display: grid;
+            place-items: center;
+            font-size: 65px;
+            background: #f0efff;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .product h3 {
+            margin-bottom: 10px;
+        }
+
+        .price {
+            font-size: 19px;
+            font-weight: bold;
+            margin: 12px 0;
+        }
+
+        .product button {
+            width: 100%;
+        }
+
+        #cartPanel {
+            margin: 25px 7%;
+            padding: 22px;
+            background: white;
+            border-radius: 14px;
+        }
+
+        #cartItems p {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        footer {
+            background: #20243a;
+            color: white;
+            text-align: center;
+            padding: 25px;
+        }
+
+        @media (max-width: 600px) {
+            header {
+                padding: 18px 5%;
+            }
+
+            .search {
+                width: 100%;
+            }
+
+            .hero {
+                padding: 35px 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo">NovaCart.</div>
+        <input class="search" id="searchInput"
+               type="text" placeholder="Search products..."
+               aria-label="Search products">
+        <div class="cart">🛒 Cart: <span id="cartCount">0</span></div>
+    </header>
+
+    <section id="loginSection">
+        <button onclick="showLogin()">Login</button>
+        <button onclick="showRegister()">Register</button>
+    </section>
+
+    <section id="authForm">
+        <h2 id="authTitle">Login</h2>
+        <input type="text" id="userName"
+               placeholder="Enter your name">
+        <input type="email" id="userEmail"
+               placeholder="Enter your email">
+        <input type="password" id="userPassword"
+               placeholder="Enter password">
+        <button onclick="submitAuth()">Submit</button>
+        <button onclick="closeAuth()">Close</button>
+        <p id="authMessage"></p>
+    </section>
+
+    <section class="hero">
+        <h1>Shopping made simple.</h1>
+        <p>Discover your everyday favourites at amazing prices.</p>
+        <button onclick="scrollToProducts()">Explore Products</button>
+    </section>
+
+    <h2 class="section-title" id="products">Featured Products</h2>
+
+    <main class="products" id="productList">
+        <article class="product" data-name="headphones">
+            <div class="product-image">🎧</div>
+            <h3>Wireless Headphones</h3>
+            <p>Enjoy your favourite music anywhere.</p>
+            <div class="price">₹1,499</div>
+            <button onclick="addToCart('Wireless Headphones')">Add to Cart</button>
+        </article>
+
+        <article class="product" data-name="smart watch">
+            <div class="product-image">⌚</div>
+            <h3>Smart Watch</h3>
+            <p>Stay connected throughout your day.</p>
+            <div class="price">₹2,299</div>
+            <button onclick="addToCart('Smart Watch')">Add to Cart</button>
+        </article>
+
+        <article class="product" data-name="backpack">
+            <div class="product-image">🎒</div>
+            <h3>Travel Backpack</h3>
+            <p>A stylish companion for every journey.</p>
+            <div class="price">₹899</div>
+            <button onclick="addToCart('Travel Backpack')">Add to Cart</button>
+        </article>
+
+        <article class="product" data-name="sneakers">
+            <div class="product-image">👟</div>
+            <h3>Casual Sneakers</h3>
+            <p>Comfort and style for everyday use.</p>
+            <div class="price">₹1,799</div>
+            <button onclick="addToCart('Casual Sneakers')">Add to Cart</button>
+        </article>
+    </main>
+
+    <section id="cartPanel">
+        <h2>🛒 Your Shopping Cart</h2>
+        <div id="cartItems" style="margin-top:18px;">
+            Your cart is empty.
+        </div>
+        <h3 id="cartTotal" style="margin-top:20px;">Total: ₹0</h3>
+        <button onclick="checkout()" style="margin-top:15px;">Checkout</button>
+        <p id="checkoutMessage" style="margin-top:15px;"></p>
+    </section>
+
+    <footer>
+        <p>NovaCart — Your everyday shopping destination.</p>
+        <p style="margin-top:8px;">Demo Ecommerce Project | 2026</p>
+    </footer>
+</body>
+</html>
+
+<script>
+    const cart = {};
+
+    const prices = {
+        "Wireless Headphones": 1499,
+        "Smart Watch": 2299,
+        "Travel Backpack": 899,
+        "Casual Sneakers": 1799
+    };
+
+    function addToCart(productName) {
+        if (cart[productName]) {
+            cart[productName].quantity++;
+        } else {
+            cart[productName] = {
+                price: prices[productName],
+                quantity: 1
+            };
+        }
+
+        updateCart();
+    }
+
+    function updateCart() {
+        const count = Object.values(cart).reduce(
+            (sum, item) => sum + item.quantity, 0
+        );
+
+        document.getElementById("cartCount").textContent = count;
+
+        const cartItems = document.getElementById("cartItems");
+        const cartTotal = document.getElementById("cartTotal");
+
+        cartItems.innerHTML = "";
+        let total = 0;
+
+        for (const name in cart) {
+            const item = cart[name];
+            const subtotal = item.price * item.quantity;
+            total += subtotal;
+
+            const row = document.createElement("p");
+            row.style.margin = "12px 0";
+
+            const itemName = document.createElement("span");
+            itemName.textContent = `${name} — ₹${item.price}`;
+
+            const minus = document.createElement("button");
+            minus.textContent = "−";
+            minus.onclick = () => changeQuantity(name, -1);
+
+            const quantity = document.createElement("span");
+            quantity.textContent = item.quantity;
+
+            const plus = document.createElement("button");
+            plus.textContent = "+";
+            plus.onclick = () => changeQuantity(name, 1);
+
+            const amount = document.createElement("span");
+            amount.textContent = `Subtotal: ₹${subtotal}`;
+
+            const remove = document.createElement("button");
+            remove.textContent = "Remove";
+            remove.onclick = () => removeFromCart(name);
+
+            row.append(itemName, minus, quantity, plus, amount, remove);
+            cartItems.appendChild(row);
+        }
+
+        if (total === 0) {
+            cartItems.textContent = "Your cart is empty.";
+        }
+
+        cartTotal.textContent = `Total: ₹${total}`;
+    }
+
+    function changeQuantity(productName, change) {
+        if (!cart[productName]) return;
+
+        cart[productName].quantity += change;
+
+        if (cart[productName].quantity <= 0) {
+            delete cart[productName];
+        }
+
+        updateCart();
+    }
+
+    function removeFromCart(productName) {
+        delete cart[productName];
+        updateCart();
+    }
+
+    function checkout() {
+        const message = document.getElementById("checkoutMessage");
+
+        if (Object.keys(cart).length === 0) {
+            message.textContent =
+                "Your cart is empty. Please add products first.";
+            return;
+        }
+
+        let summary = "Order Summary:\n";
+
+        for (const name in cart) {
+            summary += `${name} x ${cart[name].quantity}\n`;
+        }
+
+        const total = Object.values(cart).reduce(
+            (sum, item) => sum + item.price * item.quantity,
+            0
+        );
+
+        summary += `Total Amount: ₹${total}`;
+        message.style.whiteSpace = "pre-line";
+        message.textContent =
+            summary + "\n\nDemo order placed successfully!";
+    }
+
+    function scrollToProducts() {
+        document.getElementById("products").scrollIntoView({
+            behavior: "smooth"
+        });
+    }
+
+const searchInput = document.getElementById("searchInput");
+
+if (searchInput) {
+    searchInput.addEventListener("input", function () {
+        const searchText = this.value.toLowerCase().trim();
+
+        document.querySelectorAll("#productList .product").forEach(function (product) {
+            const productName = product.dataset.name.toLowerCase();
+            product.style.display = productName.includes(searchText) ? "" : "none";
+        });
+    });
+}        
+
+    function showLogin() {
+        document.getElementById("authForm").style.display = "block";
+        document.getElementById("authTitle").textContent = "Login";
+        document.getElementById("userName").style.display = "none";
+        document.getElementById("authMessage").textContent = "";
+    }
+
+    function showRegister() {
+        document.getElementById("authForm").style.display = "block";
+        document.getElementById("authTitle").textContent = "Register";
+        document.getElementById("userName").style.display = "block";
+        document.getElementById("authMessage").textContent = "";
+    }
+
+    function closeAuth() {
+        document.getElementById("authForm").style.display = "none";
+    }
+
+    function submitAuth() {
+        const name = document.getElementById("userName").value.trim();
+        const email = document.getElementById("userEmail").value.trim();
+        const password = document.getElementById("userPassword").value;
+        const title = document.getElementById("authTitle").textContent;
+        const message = document.getElementById("authMessage");
+
+        if (title === "Register" && name === "") {
+            message.textContent = "Please enter your name.";
+            return;
+        }
+
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            message.textContent = "Please enter a valid email.";
+            return;
+        }
+
+        if (password.length < 6) {
+            message.textContent =
+                "Password must be at least 6 characters.";
+            return;
+        }
+
+        message.textContent =
+            "Validation successful! Real " +
+            title.toLowerCase() + " needs a backend.";
+    }
+</script>
